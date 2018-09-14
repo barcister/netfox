@@ -40,6 +40,7 @@ class NFXListController_iOS: NFXListController, UITableViewDelegate, UITableView
 
         let rightButtons = [
             UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(NFXListController_iOS.trashButtonPressed)),
+            UIBarButtonItem(title: "💾 HAR", style: .done, target: self, action: #selector(NFXListController_iOS.exportHARButtonPressed)),
             UIBarButtonItem(image: UIImage.NFXSettings(), style: .plain, target: self, action: #selector(NFXListController_iOS.settingsButtonPressed))
         ]
 
@@ -98,6 +99,20 @@ class NFXListController_iOS: NFXListController, UITableViewDelegate, UITableView
         var settingsController: NFXSettingsController_iOS
         settingsController = NFXSettingsController_iOS()
         self.navigationController?.pushViewController(settingsController, animated: true)
+    }
+
+    @objc func exportHARButtonPressed()
+    {
+        let models = NFXHTTPModelManager.sharedInstance.getModels()
+
+        guard let fileUrl = HAR.generateWithModelObjects(modelObjects: models) else {
+            return
+        }
+
+        let activityViewController = UIActivityViewController(
+            activityItems: ["Check out this HAR file.", fileUrl],
+            applicationActivities: nil)
+        present(activityViewController, animated: true, completion: nil)
     }
 
     @objc func trashButtonPressed()

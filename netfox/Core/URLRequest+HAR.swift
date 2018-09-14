@@ -8,11 +8,9 @@
 
 import Foundation
 
-public typealias HARType = [String: Any]
-
 extension URLRequest {
-    var HARRepresentation: HARType {
-        var requestHAR: HARType = [
+    var HARRepresentation: [String: Any] {
+        var requestHAR: [String: Any] = [
             HARConstants.HARMethod: httpMethod ?? "GET",
             HARConstants.HARURL: url?.absoluteURL.description ?? "missing url",
             HARConstants.HARHTTPVersion: "HTTP/1.1"

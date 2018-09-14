@@ -11,8 +11,8 @@ import Foundation
 let INCLUDE_RESPONSE_BODY = true
 
 extension URLResponse {
-    var HARRepresentation: HARType {
-        var responseHAR: HARType = [:]
+    var HARRepresentation: [String: Any] {
+        var responseHAR: [String: Any] = [:]
         var HARCookies: [Any] = []
 
         // Sometimes (for example from a data: URL) we just get an NSURLResponse, not
@@ -27,9 +27,9 @@ extension URLResponse {
             if let headers = (self as? HTTPURLResponse)?.allHeaderFields as? [String: String], let url = url {
                 HAR.addHARHeadersFromDictionary(headers: headers, toHAR: &responseHAR)
 
-                let HARContent: HARType = [HARConstants.HARSize: expectedContentLength,
-                                           HARConstants.HARMIMEType: mimeType ?? "missing MIME type",
-                                           HARConstants.HARText: statusText]
+                let HARContent: [String: Any] = [HARConstants.HARSize: expectedContentLength,
+                                                 HARConstants.HARMIMEType: mimeType ?? "missing MIME type",
+                                                 HARConstants.HARText: statusText]
                 responseHAR[HARConstants.HARContent] = HARContent
 
                 // derive cookies from headers
@@ -55,16 +55,11 @@ extension URLResponse {
 
         // TODO(marq) correctly populate this
         responseHAR[HARConstants.HARRedirectURL] = ""
-
-<<<<<<< HEAD
-=======
         responseHAR[HARConstants.HARBodySize] = expectedContentLength
-
->>>>>>> add HAR support
         return responseHAR
     }
 
-    func HARRepresentation(with data: Data) -> HARType {
+    func HARRepresentation(with data: Data) -> [String: Any] {
         var HAR = HARRepresentation
         var contentLength = data.count
 
@@ -83,9 +78,9 @@ extension URLResponse {
             contentText = "(body suppressed)"
         }
 
-        let HARContent: HARType = [HARConstants.HARSize: contentLength,
-                                   HARConstants.HARMIMEType: mimeType ?? "missing MIME type",
-                                   HARConstants.HARText: contentText]
+        let HARContent: [String: Any] = [HARConstants.HARSize: contentLength,
+                                         HARConstants.HARMIMEType: mimeType ?? "missing MIME type",
+                                         HARConstants.HARText: contentText]
         HAR[HARConstants.HARContent] = HARContent
 
         return HAR

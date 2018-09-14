@@ -22,8 +22,8 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 @objc public class NFXHTTPModel: NSObject
 {
     /// request & response
-    @objc public var HARRequest: HARType?
-    @objc public var HARresponse: HARType?
+    @objc public var HARRequest: [String: Any] = HAR.defaultHARRequest
+    @objc public var HARresponse: [String: Any] = HAR.defaultHARResponse
 
     @objc public var requestURL: String?
     @objc public var requestMethod: String?
@@ -55,7 +55,7 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
     {
         self.HARRequest = request.HARRepresentation
         self.requestDate = Date()
-        self.requestTime = getTimeFromDate(self.requestDate!)
+        self.requestTime = getTimeFromDate(self.requestDate ?? Date())
         self.requestURL = request.getNFXURL()
         self.requestMethod = request.getNFXMethod()
         self.requestCachePolicy = request.getNFXCachePolicy()
@@ -133,7 +133,30 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
         }
         
     }
-    
+
+    /**
+     * Prefill properties with default datas (for socket logging).
+     **/
+    @objc public func prefill(with url: String) {
+        requestURL = url
+        requestMethod  = "📡"
+        requestCachePolicy = ""
+        requestDate = Date()
+        requestTime = getTimeFromDate(Date())
+        requestTimeout = "0.0"
+        requestHeaders = URLRequest(url: URL(string: requestURL!)!).allHTTPHeaderFields
+        requestBodyLength = 10
+        requestType = ""
+        requestCurl = ""
+
+        responseStatus = -10
+        responseType = "GraphQL Data"
+        responseDate = Date()
+        responseTime = getTimeFromDate(Date())
+        responseHeaders = URLRequest(url: URL(string: requestURL!)!).allHTTPHeaderFields
+        responseBodyLength = 10
+    }
+
     fileprivate func prettyOutput(_ rawData: Data, contentType: String? = nil) -> NSString
     {
         if let contentType = contentType {
@@ -152,13 +175,22 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
         }
         return prettyOutput(data, contentType: requestType)
     }
-    
-    @objc public func getResponseBody() -> NSString
-    {
-        guard let data = readRawData(getResponseBodyFilepath()) else {
-            return ""
+
+    @objc public func getResponseBody() -> NSString {
+        let filePath = getResponseBodyFilepath()
+        guard let data = readRawData(filePath) else {
+            if let content = HARresponse[HARConstants.HARContent] as? [String: Any] {
+                do {
+                    let data = try JSONSerialization.data(withJSONObject: content, options: .prettyPrinted)
+                    return String(data: data, encoding: .utf8)! as NSString
+                } catch {
+                    return "Missing body data."
+                }
+            } else {
+                return "Missing body data."
+            }
         }
-        
+
         return prettyOutput(data, contentType: responseType)
     }
     
@@ -205,12 +237,17 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
             print("catch !!!")
         }
     }
-    
-    @objc public func readRawData(_ fromFile: String) -> Data?
-    {
-        return (try? Data(contentsOf: URL(fileURLWithPath: fromFile)))
+
+    @objc public func readRawData(_ filePath: String) -> Data? {
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
+            return data
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
     }
-    
+
     @objc public func getTimeFromDate(_ date: Date) -> String?
     {
         let calendar = Calendar.current

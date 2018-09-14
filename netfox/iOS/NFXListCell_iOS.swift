@@ -142,11 +142,12 @@ class NFXListCell: UITableViewCell
         if status == 999 {
             self.statusView.backgroundColor = UIColor.NFXGray44Color() //gray
             self.timeIntervalLabel.textColor = UIColor.white
-
         } else if status < 400 {
             self.statusView.backgroundColor = UIColor.NFXGreenColor() //green
             self.timeIntervalLabel.textColor = UIColor.NFXDarkGreenColor()
-
+        } else if status == -10 { // GRAPHQL
+            self.statusView.backgroundColor = NFXColor.init(red: 229/255, green: 166/255, blue: 28/255, alpha: 1.0)
+            self.timeIntervalLabel.textColor = UIColor.NFXGray44Color()
         } else {
             self.statusView.backgroundColor = UIColor.NFXRedColor() //red
             self.timeIntervalLabel.textColor = UIColor.NFXDarkRedColor()

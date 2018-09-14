@@ -12,6 +12,53 @@ import UIKit
 let DEBUG_TIMING = false
 
 class HAR {
+    static var templateHeader: [[String: Any]] = [
+        ["name": "Content-Type", "value": "application/json"],
+        ["name": "Content-Length", "value": "0"],
+        ["name": "x-powered-by", "value": "?"],
+        ["name": "Date", "value": Date().description],
+        ["name": "Content-Language", "value": "en-US"],
+        ["name": "Vary", "value": "Accept-Encoding"],
+        ["name": "Content-Encoding", "value": "gzip"],
+        ["name": "Server", "value": "nginx/1.6.2"]
+    ]
+
+    static var defaultHARRequest: [String: Any] {
+        return [
+            HARConstants.HARMethod: "GET",
+            HARConstants.HARURL: "http://defaultSocketURL",
+            HARConstants.HARHTTPVersion: "HTTP/1.1",
+            HARConstants.HARCookies: [],
+            HARConstants.HARHeaders: templateHeader,
+            HARConstants.HARQueryString: [["name": "", "value": ""]],
+            HARConstants.HARPostData: ["mimeType":""],
+            HARConstants.HARHeadersSize: 150,
+            HARConstants.HARBodySize: 0,
+            HARConstants.HARComment: ""
+        ]
+    }
+
+    static var defaultHARResponse: [String: Any] {
+        return [
+            HARConstants.HARMethod: "GET",
+            HARConstants.HARURL: "http://defaultSocketURL",
+            HARConstants.HARHTTPVersion: "HTTP/1.1",
+            HARConstants.HARCookies: [],
+            HARConstants.HARHeaders: templateHeader,
+            HARConstants.HARQueryString: [],
+            HARConstants.HARPostData: [:],
+            HARConstants.HARHeadersSize: 150,
+            HARConstants.HARBodySize: 0,
+            HARConstants.HARComment: "",
+            HARConstants.HARRedirectURL: "",
+            HARConstants.HARStatus: "",
+            HARConstants.HARStatusText: "",
+            HARConstants.HARContent: ["size": 0,
+                                      "mimeType": "",
+                                      "text": ""]
+        ]
+    }
+
     // returns a new HAR dictionary populated with Creator and Browser entries
     // and including an empty mutable Entries array
     static var HAR: [String: Any] {
@@ -216,8 +263,8 @@ class HAR {
                 HARConstants.HARPageRef: appNameVersionCombined,
                 HARConstants.HARStarted: (model.requestDate ?? Date()).ISO8601Representation,
                 HARConstants.HARTime: wait,
-                HARConstants.HARRequest: model.HARRequest ?? [:],
-                HARConstants.HARResponse: model.HARresponse ?? [:],
+                HARConstants.HARRequest: model.HARRequest,
+                HARConstants.HARResponse: model.HARresponse,
                 HARConstants.HARCache: ["": ""],
                 HARConstants.HARTimings: timings
             ]
@@ -239,7 +286,6 @@ class HAR {
             let jsonData = try JSONSerialization.data(withJSONObject: resultDictionary,
                                                       options: JSONSerialization.WritingOptions.prettyPrinted)
             let resultString = String(data: jsonData, encoding: .utf8) ?? "wrong string"
-            print("👉\(resultString)👈")
 
             let fileName = String(format: "%@ %@.har", appNameVersionCombined, Date().description)
             let filePath = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)
