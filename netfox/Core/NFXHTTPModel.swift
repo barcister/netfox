@@ -21,6 +21,10 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 @objc public class NFXHTTPModel: NSObject
 {
+    /// request & response
+    @objc public var HARRequest: HARType?
+    @objc public var HARresponse: HARType?
+
     @objc public var requestURL: String?
     @objc public var requestMethod: String?
     @objc public var requestCachePolicy: String?
@@ -49,6 +53,7 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
     
     func saveRequest(_ request: URLRequest)
     {
+        self.HARRequest = request.HARRepresentation
         self.requestDate = Date()
         self.requestTime = getTimeFromDate(self.requestDate!)
         self.requestURL = request.getNFXURL()
@@ -62,6 +67,7 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
     
     func saveRequestBody(_ request: URLRequest)
     {
+        print(request.HARRepresentation)
         saveRequestBodyData(request.getNFXBody())
     }
     
@@ -78,7 +84,8 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
     func saveResponse(_ response: URLResponse, data: Data)
     {
         self.noResponse = false
-        
+
+        self.HARresponse = response.HARRepresentation(with: data)
         self.responseDate = Date()
         self.responseTime = getTimeFromDate(self.responseDate!)
         self.responseStatus = response.getNFXStatus()

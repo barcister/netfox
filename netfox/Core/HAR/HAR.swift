@@ -186,14 +186,14 @@ class HAR {
                        HARConstants.HARVersion: versionNumber]
 
         // pages
-        let pages: [String: Any] = [
+        let pages: [[String: Any]] = [[
             HARConstants.HARStarted: modelObjects.last?.requestDate?.ISO8601Representation ?? Date().ISO8601Representation,
             HARConstants.HARId: appNameVersionCombined,
             HARConstants.HARTitle: appNameVersionCombined,
-            HARConstants.HARTimings: [
+            HARConstants.HARPageTimings: [
                 HARConstants.HAROnContentLoad: 0.0,
-                HARConstants.HAROnContentLoad: 0.0
-            ]
+                HARConstants.HAROnLoad: 0.0
+            ]]
         ]
 
         // entries
@@ -216,9 +216,9 @@ class HAR {
                 HARConstants.HARPageRef: appNameVersionCombined,
                 HARConstants.HARStarted: (model.requestDate ?? Date()).ISO8601Representation,
                 HARConstants.HARTime: wait,
-                HARConstants.HARRequest: model.getRequestBody(),
-                HARConstants.HARResponse: model.getResponseBody(),
-                HARConstants.HARCache: "",
+                HARConstants.HARRequest: model.HARRequest ?? [:],
+                HARConstants.HARResponse: model.HARresponse ?? [:],
+                HARConstants.HARCache: ["": ""],
                 HARConstants.HARTimings: timings
             ]
 
@@ -239,7 +239,7 @@ class HAR {
             let jsonData = try JSONSerialization.data(withJSONObject: resultDictionary,
                                                       options: JSONSerialization.WritingOptions.prettyPrinted)
             let resultString = String(data: jsonData, encoding: .utf8) ?? "wrong string"
-            //print("👉\(resultString)👈"")
+            print("👉\(resultString)👈")
 
             let fileName = String(format: "%@ %@.har", appNameVersionCombined, Date().description)
             let filePath = (NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)

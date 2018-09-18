@@ -27,6 +27,11 @@ extension URLResponse {
             if let headers = (self as? HTTPURLResponse)?.allHeaderFields as? [String: String], let url = url {
                 HAR.addHARHeadersFromDictionary(headers: headers, toHAR: &responseHAR)
 
+                let HARContent: HARType = [HARConstants.HARSize: expectedContentLength,
+                                           HARConstants.HARMIMEType: mimeType ?? "missing MIME type",
+                                           HARConstants.HARText: statusText]
+                responseHAR[HARConstants.HARContent] = HARContent
+
                 // derive cookies from headers
                 let responseCookies = HTTPCookie.cookies(withResponseHeaderFields: headers, for: url)
 
@@ -51,6 +56,11 @@ extension URLResponse {
         // TODO(marq) correctly populate this
         responseHAR[HARConstants.HARRedirectURL] = ""
 
+<<<<<<< HEAD
+=======
+        responseHAR[HARConstants.HARBodySize] = expectedContentLength
+
+>>>>>>> add HAR support
         return responseHAR
     }
 
