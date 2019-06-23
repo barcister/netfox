@@ -67,7 +67,6 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
     
     func saveRequestBody(_ request: URLRequest)
     {
-        print(request.HARRepresentation)
         saveRequestBodyData(request.getNFXBody())
     }
     
