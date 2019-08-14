@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name             = "netfox"
+  s.name             = "netfox-sc"
   s.version          = "1.12.1"
   s.summary          = "A lightweight, one line setup, iOS/OSX network debugging library!"
  
@@ -7,11 +7,11 @@ Pod::Spec.new do |s|
 A lightweight, one line setup, network debugging library that provides a quick look on all executed network requests performed by your app. It grabs all requests - of course yours, requests from 3rd party libraries (such as AFNetworking or else), UIWebViews, and more. Very useful and handy for network related issues and bugs.
 DESC
 
-  s.homepage         = "https://github.com/barcister/netfox"
+  s.homepage         = "https://github.com/kasketis/netfox"
   s.screenshots      = "https://raw.githubusercontent.com/kasketis/netfox/master/assets/overview1_5_3.gif"
   s.license          = 'MIT'
   s.author           = "Bálint Barczi"
-  s.source           = { :git => "https://github.com/barcister/netfox.git", :tag => "#{s.version}" }
+  s.source           = { :git => "https://github.com/barcister/netfox.git" }
 
   s.ios.deployment_target = '8.0'
   s.osx.deployment_target = '10.11'

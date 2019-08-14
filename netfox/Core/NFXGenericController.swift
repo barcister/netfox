@@ -48,8 +48,8 @@ class NFXGenericController: NFXViewController
                 tempMutableString.addAttribute(NSFontAttributeName, value: NFXFont.NFXFontBold(size: 14), range: match.range)
                 tempMutableString.addAttribute(NSForegroundColorAttributeName, value: NFXColor.NFXOrangeColor(), range: match.range)
             #else
-                tempMutableString.addAttribute(NSAttributedStringKey.font, value: NFXFont.NFXFontBold(size: 14), range: match.range)
-                tempMutableString.addAttribute(NSAttributedStringKey.foregroundColor, value: NFXColor.NFXOrangeColor(), range: match.range)
+            tempMutableString.addAttribute(NSAttributedString.Key.font, value: NFXFont.NFXFontBold(size: 14), range: match.range)
+            tempMutableString.addAttribute(NSAttributedString.Key.foregroundColor, value: NFXColor.NFXOrangeColor(), range: match.range)
             #endif
         }
         
@@ -60,7 +60,7 @@ class NFXGenericController: NFXViewController
             #if !swift(>=4.0)
                 tempMutableString.addAttribute(NSForegroundColorAttributeName, value: NFXColor.NFXBlackColor(), range: match.range)
             #else
-                tempMutableString.addAttribute(NSAttributedStringKey.foregroundColor, value: NFXColor.NFXBlackColor(), range: match.range)
+            tempMutableString.addAttribute(NSAttributedString.Key.foregroundColor, value: NFXColor.NFXBlackColor(), range: match.range)
             #endif
         }
         
